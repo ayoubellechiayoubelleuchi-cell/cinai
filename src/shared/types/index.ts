@@ -9,7 +9,7 @@ export interface Video {
   createdAt: string
 }
 
-export interface User {
+export interface AuthUser {
   id: string
   email: string
   credits: number
@@ -20,4 +20,10 @@ export interface WaitlistEntry {
   email: string
   name?: string
   createdAt: string
+}
+
+export interface AuthState {
+  user: AuthUser | null
+  isLoading: boolean
+  error: string | null
 }

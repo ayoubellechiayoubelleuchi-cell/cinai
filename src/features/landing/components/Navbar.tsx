@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Container } from '../../../shared/components/layout/Container'
 import { Button } from '../../../shared/components/ui/Button'
@@ -30,7 +31,7 @@ export function Navbar() {
             ))}
           </nav>
 
-          <Button size="sm">Get Started</Button>
+          <Link to="/login"><Button size="sm">Get Started</Button></Link>
         </div>
       </Container>
     </motion.header>
