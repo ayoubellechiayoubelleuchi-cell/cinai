@@ -3,20 +3,16 @@ import { Button } from '../../../shared/components/ui/Button'
 import { PromptInput } from './PromptInput'
 import { StyleSelector } from './StyleSelector'
 import { VideoResult } from './VideoResult'
+import { useGenerateVideo } from '../../../hooks/useGenerateVideo'
 
 export function GeneratePage() {
   const [prompt, setPrompt] = useState('')
   const [style, setStyle] = useState('cinematic')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [videoUrl, setVideoUrl] = useState<string | null>(null)
+  const { mutate, data, isPending, error } = useGenerateVideo()
 
-  async function handleGenerate() {
+  function handleGenerate() {
     if (!prompt.trim()) return
-    setIsGenerating(true)
-    setVideoUrl(null)
-    setTimeout(() => {
-      setIsGenerating(false)
-    }, 3000)
+    mutate({ prompt, style })
   }
 
   return (
@@ -33,13 +29,19 @@ export function GeneratePage() {
           <PromptInput value={prompt} onChange={setPrompt} />
           <StyleSelector selected={style} onSelect={setStyle} />
 
+          {error && (
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
+              {error.message}
+            </div>
+          )}
+
           <Button
             size="lg"
             className="w-full"
             onClick={handleGenerate}
-            disabled={!prompt.trim() || isGenerating}
+            disabled={!prompt.trim() || isPending}
           >
-            {isGenerating ? (
+            {isPending ? (
               <span className="flex items-center gap-2">
                 <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -59,7 +61,11 @@ export function GeneratePage() {
         </div>
 
         <div className="lg:col-span-2">
-          <VideoResult videoUrl={videoUrl} prompt={prompt} isLoading={isGenerating} />
+          <VideoResult
+            videoUrl={data?.videoUrl ?? null}
+            prompt={prompt}
+            isLoading={isPending}
+          />
         </div>
       </div>
     </div>
