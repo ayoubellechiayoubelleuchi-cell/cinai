@@ -4,15 +4,31 @@ import { PromptInput } from './PromptInput'
 import { StyleSelector } from './StyleSelector'
 import { VideoResult } from './VideoResult'
 import { useGenerateVideo } from '../../../hooks/useGenerateVideo'
+import { useToastStore } from '../../../store/toastStore'
 
 export function GeneratePage() {
   const [prompt, setPrompt] = useState('')
   const [style, setStyle] = useState('cinematic')
+  const addToast = useToastStore((s) => s.addToast)
   const { mutate, data, isPending, error } = useGenerateVideo()
 
   function handleGenerate() {
     if (!prompt.trim()) return
-    mutate({ prompt, style })
+    mutate(
+      { prompt, style },
+      {
+        onSuccess: (result) => {
+          if (result.status === 'completed') {
+            addToast('Video generated successfully!', 'success')
+          } else {
+            addToast('Video is processing. Check back shortly.', 'info')
+          }
+        },
+        onError: (err) => {
+          addToast(err.message, 'error')
+        },
+      },
+    )
   }
 
   return (

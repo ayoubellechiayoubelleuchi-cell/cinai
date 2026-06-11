@@ -7,7 +7,7 @@ interface GenerateInput {
   duration?: number
 }
 
-interface GenerateResponse {
+export interface GenerateResponse {
   id: string
   status: 'processing' | 'completed' | 'failed'
   videoUrl: string | null
@@ -47,5 +47,7 @@ async function generateVideo(input: GenerateInput): Promise<GenerateResponse> {
 export function useGenerateVideo() {
   return useMutation({
     mutationFn: generateVideo,
+    retry: 2,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
   })
 }

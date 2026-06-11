@@ -4,6 +4,8 @@ import { LoginPage, AuthCallback } from './features/auth'
 import { DashboardLayout } from './features/dashboard'
 import { GeneratePage } from './features/generator'
 import { AuthGuard } from './shared/components/auth/AuthGuard'
+import { ErrorBoundary } from './shared/components/ui/ErrorBoundary'
+import { ToastContainer } from './shared/components/ui/ToastContainer'
 
 function DashboardHome() {
   return (
@@ -16,24 +18,27 @@ function DashboardHome() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route
-          path="/dashboard"
-          element={
-            <AuthGuard fallback={<Navigate to="/login" replace />}>
-              <DashboardLayout />
-            </AuthGuard>
-          }
-        >
-          <Route index element={<DashboardHome />} />
-          <Route path="generate" element={<GeneratePage />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route
+            path="/dashboard"
+            element={
+              <AuthGuard fallback={<Navigate to="/login" replace />}>
+                <DashboardLayout />
+              </AuthGuard>
+            }
+          >
+            <Route index element={<DashboardHome />} />
+            <Route path="generate" element={<GeneratePage />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer />
+    </ErrorBoundary>
   )
 }
