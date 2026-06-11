@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { Container } from '../../../shared/components/layout/Container'
+import { PageTransition } from '../../../shared/components/layout/PageTransition'
 
 export function DashboardLayout() {
   return (
@@ -19,7 +20,9 @@ export function DashboardLayout() {
         <Sidebar />
         <main className="flex-1 lg:pl-56">
           <Container className="py-6">
-            <Outlet />
+            <PageTransition>
+              <Outlet />
+            </PageTransition>
           </Container>
         </main>
       </div>

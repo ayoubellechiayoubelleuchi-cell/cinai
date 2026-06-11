@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Container } from '../../../shared/components/layout/Container'
 import { Button } from '../../../shared/components/ui/Button'
+import { ScrollProgress } from '../../../shared/components/layout/ScrollProgress'
 import { SITE, NAV_ITEMS } from '../../../shared/lib/constants'
 
 export function Navbar() {
@@ -12,6 +13,7 @@ export function Navbar() {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className="fixed top-0 z-50 w-full border-b border-white/5 backdrop-blur-xl"
     >
+      <ScrollProgress />
       <Container>
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">

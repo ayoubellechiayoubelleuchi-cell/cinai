@@ -4,6 +4,7 @@ import { motion, useMotionTemplate, useMotionValue } from 'framer-motion'
 import { Container } from '../../../shared/components/layout/Container'
 import { Button } from '../../../shared/components/ui/Button'
 import { GradientText } from '../../../shared/components/ui/GradientText'
+import { Particles } from '../../../shared/components/ui/Particles'
 
 export function Hero() {
   const mouseX = useMotionValue(0)
@@ -23,6 +24,7 @@ export function Hero() {
 
   return (
     <section ref={ref} className="group relative min-h-screen flex items-center justify-center overflow-hidden">
+      <Particles />
       <div className="cinematic-glow pointer-events-none absolute inset-0" />
 
       <motion.div
