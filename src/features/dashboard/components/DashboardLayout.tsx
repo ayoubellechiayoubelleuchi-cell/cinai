@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { Container } from '../../shared/components/layout/Container'
+import { Container } from '../../../shared/components/layout/Container'
 
 export function DashboardLayout() {
   return (

@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Container } from '../../shared/components/layout/Container'
-import { Card } from '../../shared/components/ui/Card'
-import { Button } from '../../shared/components/ui/Button'
-import { Input } from '../../shared/components/ui/Input'
-import { signInWithMagicLink, signInWithGoogle } from '../../services/auth'
+import { Container } from '../../../shared/components/layout/Container'
+import { Card } from '../../../shared/components/ui/Card'
+import { Button } from '../../../shared/components/ui/Button'
+import { Input } from '../../../shared/components/ui/Input'
+import { signInWithMagicLink, signInWithGoogle } from '../../../services/auth'
 
 export function LoginPage() {
   const [email, setEmail] = useState('')
