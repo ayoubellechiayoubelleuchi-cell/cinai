@@ -5,14 +5,19 @@ interface WaitlistInput {
   name?: string
 }
 
-async function submitToWaitlist(input: WaitlistInput): Promise<{ message: string }> {
+interface WaitlistResponse {
+  message?: string
+  error?: string
+}
+
+async function submitToWaitlist(input: WaitlistInput): Promise<WaitlistResponse> {
   const response = await fetch('/api/waitlist', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   })
 
-  const data = await response.json()
+  const data: WaitlistResponse = await response.json()
 
   if (!response.ok) {
     throw new Error(data.error ?? 'Failed to join waitlist')

@@ -21,16 +21,6 @@ export async function signInWithGoogle() {
   return { error }
 }
 
-export async function signOut() {
-  const { error } = await supabase.auth.signOut()
-  return { error }
-}
-
-export async function getCurrentSession() {
-  const { data, error } = await supabase.auth.getSession()
-  return { session: data.session, error }
-}
-
 export async function getCurrentUser(): Promise<{ user: AuthUser | null; error: Error | null }> {
   const { data, error } = await supabase.auth.getUser()
   if (error || !data.user) return { user: null, error: error as Error | null }

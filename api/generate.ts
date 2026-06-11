@@ -11,6 +11,15 @@ interface GenerateRequest {
   duration: number
 }
 
+interface VertexPrediction {
+  videoUrl?: string
+  thumbnailUrl?: string
+}
+
+interface VertexResponse {
+  predictions?: VertexPrediction[]
+}
+
 function validateInput(body: unknown): GenerateRequest {
   if (!body || typeof body !== 'object') {
     throw new Error('Invalid request body')
@@ -121,20 +130,10 @@ export default async function handler(request: Request): Promise<Response> {
       throw new Error(`Vertex AI API error: ${vertexResponse.status} ${errorText}`)
     }
 
-    const vertexData = await vertexResponse.json()
-    const videoUrl: string | null = vertexData.predictions?.[0]?.videoUrl ?? null
-    const thumbnailUrl: string | null = vertexData.predictions?.[0]?.thumbnailUrl ?? null
-    const operationName: string | null = vertexData.name ?? null
-
-    if (operationName && !videoUrl) {
-      return new Response(JSON.stringify({
-        id: generateId(),
-        status: 'processing',
-        videoUrl: null,
-        thumbnailUrl: null,
-        operationName,
-      }), { status: 200, headers })
-    }
+    const vertexData: VertexResponse = await vertexResponse.json()
+    const prediction = vertexData.predictions?.[0]
+    const videoUrl = prediction?.videoUrl ?? null
+    const thumbnailUrl = prediction?.thumbnailUrl ?? null
 
     return new Response(JSON.stringify({
       id: generateId(),
