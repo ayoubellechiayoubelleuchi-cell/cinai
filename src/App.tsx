@@ -1,20 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { LandingPage } from './features/landing'
 import { LoginPage, AuthCallback } from './features/auth'
-import { DashboardLayout } from './features/dashboard'
+import { DashboardLayout, DashboardHome, HistoryPage, CreditsPage } from './features/dashboard'
 import { GeneratePage } from './features/generator'
 import { AuthGuard } from './shared/components/auth/AuthGuard'
 import { ErrorBoundary } from './shared/components/ui/ErrorBoundary'
 import { ToastContainer } from './shared/components/ui/ToastContainer'
-
-function DashboardHome() {
-  return (
-    <div className="text-center py-20">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
-      <p className="mt-2 text-white/50">Your videos will appear here.</p>
-    </div>
-  )
-}
 
 export default function App() {
   return (
@@ -34,6 +25,8 @@ export default function App() {
           >
             <Route index element={<DashboardHome />} />
             <Route path="generate" element={<GeneratePage />} />
+            <Route path="history" element={<HistoryPage />} />
+            <Route path="credits" element={<CreditsPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
