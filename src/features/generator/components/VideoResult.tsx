@@ -41,7 +41,6 @@ export function VideoResult({ videoUrl, prompt, isLoading }: VideoResultProps) {
         <video
           src={videoUrl}
           controls
-          poster=""
           className="h-full w-full object-cover"
         >
           Your browser does not support the video tag.

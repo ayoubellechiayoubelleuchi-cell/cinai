@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL ?? ''
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY ?? ''
+const supabaseUrl = process.env.SUPABASE_URL ?? ''
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? ''
 const vertexProjectId = process.env.VERTEX_PROJECT_ID ?? ''
 const vertexApiKey = process.env.VERTEX_AI_KEY ?? ''
 
@@ -36,6 +36,13 @@ function validateInput(body: unknown): GenerateRequest {
     style: data.style,
     duration,
   }
+}
+
+function generateId(): string {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID()
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
 }
 
 export const config = {
@@ -86,20 +93,17 @@ export default async function handler(request: Request): Promise<Response> {
 
     if (!vertexApiKey || !vertexProjectId) {
       return new Response(JSON.stringify({
-        id: crypto.randomUUID(),
-        status: 'processing',
-        videoUrl: null,
-        thumbnailUrl: null,
-        message: 'Vertex AI is not configured. Set VERTEX_AI_KEY and VERTEX_PROJECT_ID.',
-      }), { status: 200, headers })
+        error: 'Vertex AI is not configured. Set VERTEX_AI_KEY and VERTEX_PROJECT_ID in your environment variables.',
+      }), { status: 503, headers })
     }
 
+    const location = 'us-central1'
     const vertexResponse = await fetch(
-      `https://us-central1-aiplatform.googleapis.com/v1/projects/${vertexProjectId}/locations/us-central1/publishers/google/models/veo:predict`,
+      `https://${location}-aiplatform.googleapis.com/v1/projects/${vertexProjectId}/locations/${location}/publishers/google/models/veo:predict`,
       {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${vertexApiKey}`,
+          'x-goog-api-key': vertexApiKey,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -118,12 +122,23 @@ export default async function handler(request: Request): Promise<Response> {
     }
 
     const vertexData = await vertexResponse.json()
-    const videoUrl = vertexData.predictions?.[0]?.videoUrl ?? null
-    const thumbnailUrl = vertexData.predictions?.[0]?.thumbnailUrl ?? null
+    const videoUrl: string | null = vertexData.predictions?.[0]?.videoUrl ?? null
+    const thumbnailUrl: string | null = vertexData.predictions?.[0]?.thumbnailUrl ?? null
+    const operationName: string | null = vertexData.name ?? null
+
+    if (operationName && !videoUrl) {
+      return new Response(JSON.stringify({
+        id: generateId(),
+        status: 'processing',
+        videoUrl: null,
+        thumbnailUrl: null,
+        operationName,
+      }), { status: 200, headers })
+    }
 
     return new Response(JSON.stringify({
-      id: crypto.randomUUID(),
-      status: videoUrl ? 'completed' : 'processing',
+      id: generateId(),
+      status: videoUrl ? 'completed' : 'failed',
       videoUrl,
       thumbnailUrl,
     }), { status: 200, headers })

@@ -22,7 +22,7 @@ export function Hero() {
   }, [mouseX, mouseY])
 
   return (
-    <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section ref={ref} className="group relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="cinematic-glow pointer-events-none absolute inset-0" />
 
       <motion.div
